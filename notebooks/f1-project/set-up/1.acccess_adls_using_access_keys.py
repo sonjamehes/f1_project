@@ -2,9 +2,9 @@
 # MAGIC %md
 # MAGIC #### Access Azure Data Lake using access keys
 # MAGIC 1. set the park config fs.azure.account.key
-# MAGIC 1. list files from demo container
-# MAGIC 1. read data from circuits.csv file
-# MAGIC
+# MAGIC 2. list files from demo container
+# MAGIC 3. read data from circuits.csv file
+# MAGIC 4. test this on github
 
 # COMMAND ----------
 
