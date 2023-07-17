@@ -150,4 +150,4 @@ races_selected_df.write.mode('overwrite').partitionBy('race_year').parquet('/mnt
 
 # COMMAND ----------
 
-display(spark.read.parquet('/mnt/f1datalakelearn/processed-silver/races'))
+# display(spark.read.parquet('/mnt/f1datalakelearn/processed-silver/races'))
