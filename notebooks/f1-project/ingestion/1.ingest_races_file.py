@@ -128,7 +128,16 @@ races_selected_df = races_with_timestamp.select(col('raceId').alias('race_id'), 
 
 # COMMAND ----------
 
-races_selected_df.write.mode('overwrite').parquet('/mnt/f1datalakelearn/processed-silver/races')
+# races_selected_df.write.mode('overwrite').parquet('/mnt/f1datalakelearn/processed-silver/races')
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ###Step 4.2 Add to ADLS in parquet format but with partion 
+
+# COMMAND ----------
+
+races_selected_df.write.mode('overwrite').partitionBy('race_year').parquet('/mnt/f1datalakelearn/processed-silver/races')
 
 # COMMAND ----------
 
@@ -141,4 +150,4 @@ races_selected_df.write.mode('overwrite').parquet('/mnt/f1datalakelearn/processe
 
 # COMMAND ----------
 
-# display(spark.read.parquet('/mnt/f1datalakelearn/processed-silver/races'))
+display(spark.read.parquet('/mnt/f1datalakelearn/processed-silver/races'))
