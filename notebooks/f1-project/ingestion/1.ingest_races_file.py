@@ -19,7 +19,7 @@
 
 # COMMAND ----------
 
-display(circuits_df)
+# display(circuits_df)
 
 # COMMAND ----------
 
@@ -49,13 +49,13 @@ races_schema = StructType(fields=[
 
 # COMMAND ----------
 
-# circuits_df = spark.read.csv("dbfs:/mnt/f1datalakelearn/raw-bronze/circuits.csv", header=True, schema= circuit_schema) ## not this for some reason, even though it works. mmh, i think it's correct too
+# circuits_df = spark.read.csv("dbfs:/mnt/f1datalakelearn/raw-bronze/races.csv", header=True, schema= races_schema) ## not this for some reason, even though it works. mmh, i think it's correct too
 
 ## or
 
 races_df = spark.read \
 .option("header", True) \
-.schema(circuit_schema) \
+.schema(races_schema) \
 .csv("/mnt/f1datalakelearn/raw-bronze/races.csv")
 
 # COMMAND ----------
@@ -80,7 +80,25 @@ races_df = spark.read \
 
 # COMMAND ----------
 
-races_df.printSchema()
+# MAGIC %md
+# MAGIC ###Step.2 Add ingestion date and race_timestamp to dataframe
+
+# COMMAND ----------
+
+from pyspark.sql.functions import current_timestamp, lit, concat, col, to_timestamp
+
+# COMMAND ----------
+
+races_with_timestamp = races_df.withColumn('ingestion_date', current_timestamp())\
+                               .withColumn('race_timestamp',to_timestamp(concat(col('date'),lit(' '), col('time')), 'yyyy-MM-dd HH:mm:ss'))
+
+# COMMAND ----------
+
+# display(races_with_timestamp)
+
+# COMMAND ----------
+
+# races_df.printSchema()
 
 # COMMAND ----------
 
@@ -89,23 +107,7 @@ races_df.printSchema()
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ###Step2. Remove unnecessary columns -> the 'url' column in our case
-
-# COMMAND ----------
-
-# circuits = circuits_df.drop('url')
-
-##or
-# circuits_selected_df = circuits_df[['circuitId', 'circuitRef', 'name', 'location', 'country', 'lat', 'lng', 'alt']]
-##or
-
-# circuits_selected_df = circuits_df.select('circuitId', 'circuitRef', 'name', 'location', 'country', 'lat', 'lng', 'alt')
- ## or
-
-# circuits_selected_df = circuits_df.select(circuits_df.circuitId, circuits_df.circuitRef, circuits_df.name, circuits_df.location, circuits_df.country, circuits_df.lat, circuits_df.lng,     circuits_df.alt)
- ## or
-
-# circuits_selected_df = circuits_df.select(circuits_df['circuitId'], circuits_df['circuitRef'],circuits_df['name'],circuits_df['location'],circuits_df['country'],circuits_df['lat'],circuits_df['lng'],circuits_df['alt'])
+# MAGIC ### Step3. Select the columns required
 
 # COMMAND ----------
 
@@ -113,67 +115,30 @@ from pyspark.sql.functions import col
 
 # COMMAND ----------
 
-## here you can also apply renames
-
-circuits_selected_df = circuits_df.select(col('circuitId'), col('circuitRef'), col('name'), col('location'), col('country').alias('race_country'), col('lat'), col('lng'), col('alt'))
+races_selected_df = races_with_timestamp.select(col('raceId').alias('race_id'), col('year').alias('race_year'), col('round'), col('circuitId').alias('circuit_id'), col('name'), col('ingestion_date'), col('race_timestamp'))
 
 # COMMAND ----------
 
-# display(circuits_selected_df)
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ###Step3. Rename the columns as required
-
-# COMMAND ----------
-
-circuits_renamed_df = circuits_selected_df.withColumnRenamed('raceId', 'race_id') \
-                                            .withColumnRenamed('year', 'race_year') \
-                                            .withColumnRenamed('circuitId', 'circuit_Id') 
-
-
-
-# COMMAND ----------
-
-# display(circuits_renamed_df)
+# display(races_selected_df)
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ###Step4. Adding a new column called 'ingestion_date' which will include the current timestamp
+# MAGIC ###Step 4. Write the output to processed container in parquet format
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp, date_format, to_timestamp, concat, col, lit
+races_selected_df.write.mode('overwrite').parquet('/mnt/f1datalakelearn/processed-silver/races')
 
 # COMMAND ----------
 
- circuits_final_df = circuits_renamed_df.withColumn('ingestion_date', current_timestamp()) \
-     .withColumn('race_timestamp',to_timestamp(concat(col('date'),lit(''),col('time')),'yyyy-MM-dd HH:mm:ss'))
-
-# COMMAND ----------
-
-#  display(circuits_final_df)
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ###Step 5. Write df to datalake as a Parquet file
-
-# COMMAND ----------
-
-# display(dbutils.fs.mounts())
-
-# COMMAND ----------
-
-circuits_final_df.write.mode('overwrite').parquet('/mnt/f1datalakelearn/processed-silver/circuits')
+# display(dbutils.fs.mounts()
 
 # COMMAND ----------
 
 # %fs
-# ls /mnt/f1datalakelearn/processed-silver/circuits
+# ls /mnt/f1datalakelearn/processed-silver/races
 
 # COMMAND ----------
 
-# display(spark.read.parquet('/mnt/f1datalakelearn/processed-silver/circuits'))
+# display(spark.read.parquet('/mnt/f1datalakelearn/processed-silver/races'))
