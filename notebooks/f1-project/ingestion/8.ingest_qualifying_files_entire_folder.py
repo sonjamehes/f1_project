@@ -14,6 +14,16 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/config"
+# MAGIC
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+# MAGIC
+
+# COMMAND ----------
+
 # display(dbutils.fs.mounts())
 
 # COMMAND ----------
@@ -44,7 +54,7 @@ qualifying_schema = StructType(fields=[
 qualifying_df = spark.read \
     .schema(qualifying_schema) \
     .option('multiLine', True) \
-    .json('/mnt/f1datalakelearn/raw-bronze/qualifying') 
+    .json(f'{raw_folder_path}/qualifying') 
 
 # COMMAND ----------
 
@@ -65,9 +75,12 @@ from pyspark.sql.functions import current_timestamp
 
 qualifying_renamed = qualifying_df.withColumnRenamed('qualifyId', 'qualify_id') \
                                   .withColumnRenamed ('raceId', 'race_id') \
-                                  .withColumnRenamed ('constructorId', 'constructor_id') \
-                                  .withColumn('ingestion_date', current_timestamp())
+                                  .withColumnRenamed ('constructorId', 'constructor_id') 
 
+
+# COMMAND ----------
+
+qualifying_renamed = add_ingestion_date(qualifying_renamed)
 
 # COMMAND ----------
 
@@ -80,4 +93,4 @@ qualifying_renamed = qualifying_df.withColumnRenamed('qualifyId', 'qualify_id') 
 
 # COMMAND ----------
 
-qualifying_renamed .write.mode('overwrite').parquet('/mnt/f1datalakelearn/processed-silver/qualifying')
+qualifying_renamed .write.mode('overwrite').parquet(f'{processed_folder_path}/qualifying')
