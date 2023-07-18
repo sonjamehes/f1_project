@@ -9,6 +9,15 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/config"
+# MAGIC
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # circuits_df = spark.read.csv("dbfs:/mnt/f1datalakelearn/raw-bronze/circuits.csv", header=True) ## not this for some reason, even though it works
 
 ## or
@@ -52,7 +61,7 @@ circuit_schema = StructType(fields=[
 circuits_df = spark.read \
 .option("header", True) \
 .schema(circuit_schema) \
-.csv("/mnt/f1datalakelearn/raw-bronze/circuits.csv")
+.csv(f"{raw_folder_path}/circuits.csv")
 
 # COMMAND ----------
 
@@ -146,8 +155,12 @@ from pyspark.sql.functions import current_timestamp, lit
 
 # COMMAND ----------
 
- circuits_final_df = circuits_renamed_df.withColumn('ingestion_date', current_timestamp()) \
-     .withColumn('env', lit('Production'))
+#  circuits_final_df = circuits_renamed_df.withColumn('ingestion_date', current_timestamp()) \
+#      .withColumn('env', lit('Production'))
+
+# COMMAND ----------
+
+circuits_final_df = add_ingestion_date(circuits_renamed_df)
 
 # COMMAND ----------
 
@@ -164,7 +177,7 @@ from pyspark.sql.functions import current_timestamp, lit
 
 # COMMAND ----------
 
-circuits_final_df.write.mode('overwrite').parquet('/mnt/f1datalakelearn/processed-silver/circuits')
+circuits_final_df.write.mode('overwrite').parquet(f'{processed_folder_path}/circuits')
 
 # COMMAND ----------
 
@@ -173,4 +186,4 @@ circuits_final_df.write.mode('overwrite').parquet('/mnt/f1datalakelearn/processe
 
 # COMMAND ----------
 
-# display(spark.read.parquet('/mnt/f1datalakelearn/processed-silver/circuits'))
+display(spark.read.parquet(f'{processed_folder_path}/circuits'))
