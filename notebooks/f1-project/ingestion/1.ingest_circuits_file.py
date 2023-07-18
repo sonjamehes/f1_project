@@ -9,6 +9,15 @@
 
 # COMMAND ----------
 
+dbutils.widgets.help()
+
+# COMMAND ----------
+
+dbutils.widgets.text('param_data_source', "")
+v_data_source = dbutils.widgets.get('param_data_source')
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/config"
 # MAGIC
 
@@ -114,7 +123,7 @@ circuits_df = spark.read \
 
 # COMMAND ----------
 
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col,lit
 
 # COMMAND ----------
 
@@ -137,12 +146,13 @@ circuits_renamed_df = circuits_selected_df.withColumnRenamed('circuitId', 'circu
                                             .withColumnRenamed('circuitRef', 'circuit_ref') \
                                             .withColumnRenamed('lat', 'latitude') \
                                             .withColumnRenamed('lng', 'longitude') \
-                                            .withColumnRenamed('alt', 'altitude') 
+                                            .withColumnRenamed('alt', 'altitude') \
+                                            .withColumn('data_source', lit(v_data_source))
 
 
 # COMMAND ----------
 
-# display(circuits_renamed_df)
+display(circuits_renamed_df)
 
 # COMMAND ----------
 
