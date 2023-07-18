@@ -14,6 +14,11 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text('param_data_source', "")
+v_data_source = dbutils.widgets.get('param_data_source')
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/config"
 # MAGIC
 
@@ -69,13 +74,14 @@ qualifying_df = spark.read \
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp
+from pyspark.sql.functions import current_timestamp, lit
 
 # COMMAND ----------
 
 qualifying_renamed = qualifying_df.withColumnRenamed('qualifyId', 'qualify_id') \
                                   .withColumnRenamed ('raceId', 'race_id') \
-                                  .withColumnRenamed ('constructorId', 'constructor_id') 
+                                  .withColumnRenamed ('constructorId', 'constructor_id') \
+                                  .withColumn('data_source', lit(v_data_source))
 
 
 # COMMAND ----------
@@ -94,3 +100,7 @@ qualifying_renamed = add_ingestion_date(qualifying_renamed)
 # COMMAND ----------
 
 qualifying_renamed .write.mode('overwrite').parquet(f'{processed_folder_path}/qualifying')
+
+# COMMAND ----------
+
+dbutils.notebook.exit('Success')
