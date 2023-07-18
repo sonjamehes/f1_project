@@ -9,6 +9,14 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/config"
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+
+# COMMAND ----------
+
 # circuits_df = spark.read.csv("dbfs:/mnt/f1datalakelearn/raw-bronze/races.csv", header=True) ## not this for some reason, even though it works
 # display(circuits_df)
 ## or
@@ -56,7 +64,7 @@ races_schema = StructType(fields=[
 races_df = spark.read \
 .option("header", True) \
 .schema(races_schema) \
-.csv("/mnt/f1datalakelearn/raw-bronze/races.csv")
+.csv(f"{raw_folder_path }/races.csv")
 
 # COMMAND ----------
 
@@ -89,8 +97,19 @@ from pyspark.sql.functions import current_timestamp, lit, concat, col, to_timest
 
 # COMMAND ----------
 
-races_with_timestamp = races_df.withColumn('ingestion_date', current_timestamp())\
-                               .withColumn('race_timestamp',to_timestamp(concat(col('date'),lit(' '), col('time')), 'yyyy-MM-dd HH:mm:ss'))
+races_with_timestamp = races_df.withColumn('race_timestamp',to_timestamp(concat(col('date'),lit(' '), col('time')), 'yyyy-MM-dd HH:mm:ss'))
+
+# COMMAND ----------
+
+# display(races_with_timestamp)
+
+# COMMAND ----------
+
+races_with_timestamp = add_ingestion_date(races_with_timestamp )
+
+# COMMAND ----------
+
+# display(races_with_timestamp)
 
 # COMMAND ----------
 
@@ -137,7 +156,7 @@ races_selected_df = races_with_timestamp.select(col('raceId').alias('race_id'), 
 
 # COMMAND ----------
 
-races_selected_df.write.mode('overwrite').partitionBy('race_year').parquet('/mnt/f1datalakelearn/processed-silver/races')
+races_selected_df.write.mode('overwrite').partitionBy('race_year').parquet(f'{processed_folder_path}/races')
 
 # COMMAND ----------
 
@@ -150,4 +169,4 @@ races_selected_df.write.mode('overwrite').partitionBy('race_year').parquet('/mnt
 
 # COMMAND ----------
 
-# display(spark.read.parquet('/mnt/f1datalakelearn/processed-silver/races'))
+# display(spark.read.parquet(f'{processed_folder_path}/races'))
