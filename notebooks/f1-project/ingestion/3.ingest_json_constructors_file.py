@@ -4,6 +4,16 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/config"
+# MAGIC
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+# MAGIC
+
+# COMMAND ----------
+
 from pyspark.sql.types import StructType, StructField, IntegerType,  StringType
 
 # COMMAND ----------
@@ -25,7 +35,7 @@ constructor_schema = StructType(fields=[
 
 constructor_df = spark.read \
     .schema(constructor_schema) \
-    .json('/mnt/f1datalakelearn/raw-bronze/constructors.json')
+    .json(f'{raw_folder_path}/constructors.json')
 
 # COMMAND ----------
 
@@ -64,12 +74,16 @@ from pyspark.sql.functions import current_timestamp
 # COMMAND ----------
 
 constructor_final_df = constructor_df_drop.withColumnRenamed('constructorId', 'constructor_id')\
-                                          .withColumnRenamed('constructorRef', 'constructor_ref')\
-                                          .withColumn('ingestion_date', current_timestamp())
+                                          .withColumnRenamed('constructorRef', 'constructor_ref')
+                                         
 
 # COMMAND ----------
 
-# display(constructor_final_df)
+ constructor_final_df2 = add_ingestion_date(constructor_final_df)
+
+# COMMAND ----------
+
+# display(constructor_final_df2)
 
 # COMMAND ----------
 
@@ -78,7 +92,7 @@ constructor_final_df = constructor_df_drop.withColumnRenamed('constructorId', 'c
 
 # COMMAND ----------
 
-constructor_final_df.write.mode('overwrite').parquet('/mnt/f1datalakelearn/processed-silver/constructors')
+constructor_final_df2.write.mode('overwrite').parquet(f'{processed_folder_path}/constructors')
 
 # COMMAND ----------
 
