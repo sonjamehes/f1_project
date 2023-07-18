@@ -9,6 +9,11 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text('param_data_source', "")
+v_data_source = dbutils.widgets.get('param_data_source')
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/config"
 
 # COMMAND ----------
@@ -109,7 +114,11 @@ races_with_timestamp = add_ingestion_date(races_with_timestamp )
 
 # COMMAND ----------
 
-# display(races_with_timestamp)
+races_with_timestamp = races_with_timestamp.withColumn('data_source', lit(v_data_source))
+
+# COMMAND ----------
+
+display(races_with_timestamp)
 
 # COMMAND ----------
 
@@ -170,3 +179,7 @@ races_selected_df.write.mode('overwrite').partitionBy('race_year').parquet(f'{pr
 # COMMAND ----------
 
 # display(spark.read.parquet(f'{processed_folder_path}/races'))
+
+# COMMAND ----------
+
+dbutils.notebook.exit('Success')
