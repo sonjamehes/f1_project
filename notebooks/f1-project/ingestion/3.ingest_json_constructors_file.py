@@ -83,3 +83,8 @@ constructor_final_df.write.mode('overwrite').parquet('/mnt/f1datalakelearn/proce
 # COMMAND ----------
 
 # display(spark.read.parquet('/mnt/f1datalakelearn/processed-silver/constructors'))
+
+# COMMAND ----------
+
+# %fs
+# ls /mnt/f1datalakelearn/processed-silver/constructors
