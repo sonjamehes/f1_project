@@ -9,6 +9,11 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text('param_data_source', "")
+v_data_source = dbutils.widgets.get('param_data_source')
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/config"
 # MAGIC
 
@@ -64,12 +69,13 @@ lap_times_df = spark.read \
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp
+from pyspark.sql.functions import current_timestamp, lit
 
 # COMMAND ----------
 
 lap_times_renamed = lap_times_df.withColumnRenamed('driverId', 'driver_id') \
-                              .withColumnRenamed ('raceId', 'race_id') 
+                                .withColumnRenamed ('raceId', 'race_id') \
+                                .withColumn('data_source', lit(v_data_source))
 
 
 # COMMAND ----------
@@ -89,3 +95,7 @@ lap_times_renamed.write.mode('overwrite').parquet(f'{processed_folder_path}/lap_
 
 # %fs
 # ls /mnt/f1datalakelearn/processed-silver/lap_times
+
+# COMMAND ----------
+
+dbutils.notebook.exit('Success')
