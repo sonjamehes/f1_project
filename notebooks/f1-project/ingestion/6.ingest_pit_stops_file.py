@@ -18,6 +18,16 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/config"
+# MAGIC
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+# MAGIC
+
+# COMMAND ----------
+
 # %fs
 # ls /mnt/f1datalakelearn/raw-bronze
 
@@ -42,7 +52,7 @@ pit_stop_schema = StructType(fields=[
 pit_stop_df = spark.read \
     .schema(pit_stop_schema) \
     .option('multiLine', True) \
-    .json('/mnt/f1datalakelearn/raw-bronze/pit_stops.json') 
+    .json(f'{raw_folder_path}/pit_stops.json') 
 
 # COMMAND ----------
 
@@ -62,9 +72,12 @@ from pyspark.sql.functions import current_timestamp
 # COMMAND ----------
 
 pit_stop_renamed = pit_stop_df.withColumnRenamed('driverId', 'driver_id') \
-                              .withColumnRenamed ('raceId', 'race_id') \
-                              .withColumn('ingestion_date', current_timestamp())
+                              .withColumnRenamed ('raceId', 'race_id') 
 
+
+# COMMAND ----------
+
+pit_stop_renamed = add_ingestion_date(pit_stop_renamed)
 
 # COMMAND ----------
 
@@ -73,4 +86,4 @@ pit_stop_renamed = pit_stop_df.withColumnRenamed('driverId', 'driver_id') \
 
 # COMMAND ----------
 
-pit_stop_renamed.write.mode('overwrite').parquet('/mnt/f1datalakelearn/processed-silver/pit_stops')
+pit_stop_renamed.write.mode('overwrite').parquet(f'{processed_folder_path}/pit_stops')
