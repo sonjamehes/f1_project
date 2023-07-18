@@ -186,4 +186,4 @@ circuits_final_df.write.mode('overwrite').parquet(f'{processed_folder_path}/circ
 
 # COMMAND ----------
 
-display(spark.read.parquet(f'{processed_folder_path}/circuits'))
+# display(spark.read.parquet(f'{processed_folder_path}/circuits'))
