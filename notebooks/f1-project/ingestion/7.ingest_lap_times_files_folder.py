@@ -9,6 +9,16 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/config"
+# MAGIC
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+# MAGIC
+
+# COMMAND ----------
+
 # display(dbutils.fs.mounts())
 
 # COMMAND ----------
@@ -35,11 +45,11 @@ lap_times_schema = StructType(fields=[
 
 lap_times_df = spark.read \
     .schema(lap_times_schema) \
-    .csv('/mnt/f1datalakelearn/raw-bronze/lap_times') 
+    .csv(f'{raw_folder_path}/lap_times') 
 
 # COMMAND ----------
 
-display(lap_times_df)
+# display(lap_times_df)
 
 # COMMAND ----------
 
@@ -59,9 +69,12 @@ from pyspark.sql.functions import current_timestamp
 # COMMAND ----------
 
 lap_times_renamed = lap_times_df.withColumnRenamed('driverId', 'driver_id') \
-                              .withColumnRenamed ('raceId', 'race_id') \
-                              .withColumn('ingestion_date', current_timestamp())
+                              .withColumnRenamed ('raceId', 'race_id') 
 
+
+# COMMAND ----------
+
+lap_times_renamed = add_ingestion_date(lap_times_renamed)
 
 # COMMAND ----------
 
@@ -70,9 +83,9 @@ lap_times_renamed = lap_times_df.withColumnRenamed('driverId', 'driver_id') \
 
 # COMMAND ----------
 
-lap_times_renamed.write.mode('overwrite').parquet('/mnt/f1datalakelearn/processed-silver/lap_times')
+lap_times_renamed.write.mode('overwrite').parquet(f'{processed_folder_path}/lap_times')
 
 # COMMAND ----------
 
-# MAGIC %fs
-# MAGIC ls /mnt/f1datalakelearn/processed-silver/lap_times
+# %fs
+# ls /mnt/f1datalakelearn/processed-silver/lap_times
