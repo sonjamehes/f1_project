@@ -8,6 +8,16 @@
 
 # COMMAND ----------
 
+# MAGIC %run "../includes/config"
+# MAGIC
+
+# COMMAND ----------
+
+# MAGIC %run "../includes/common_functions"
+# MAGIC
+
+# COMMAND ----------
+
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType, FloatType
 
 # COMMAND ----------
@@ -38,7 +48,7 @@ schema_results = StructType(fields=[
 
 results_df = spark.read \
     .schema(schema_results) \
-    .json('/mnt/f1datalakelearn/raw-bronze/results.json')
+    .json(f'{raw_folder_path}/results.json')
 
 # COMMAND ----------
 
@@ -62,8 +72,12 @@ results_renamed = results_df.withColumnRenamed('resultId', 'result_id')\
                             .withColumnRenamed('positionOrder', 'position_order')\
                             .withColumnRenamed('fastestLap', 'fastest_lap')\
                             .withColumnRenamed('fastestLapTime', 'fastest_lap_time')\
-                            .withColumnRenamed('FasttestLapSpeed', 'fastest_lap_speed')\
-                            .withColumn('ingestion_date', current_timestamp())
+                            .withColumnRenamed('FasttestLapSpeed', 'fastest_lap_speed')
+
+
+# COMMAND ----------
+
+results_renamed = add_ingestion_date(results_renamed )
 
 # COMMAND ----------
 
@@ -75,7 +89,7 @@ display(final_results_df)
 
 # COMMAND ----------
 
-final_results_df.write.mode('overwrite').partitionBy('race_id').parquet('/mnt/f1datalakelearn/processed-silver/results')
+final_results_df.write.mode('overwrite').partitionBy('race_id').parquet(f'{processed_folder_path}/results')
 
 # COMMAND ----------
 
