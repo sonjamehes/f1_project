@@ -4,6 +4,11 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text('param_data_source', "")
+v_data_source = dbutils.widgets.get('param_data_source')
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/config"
 # MAGIC
 
@@ -69,12 +74,13 @@ constructor_df_drop = constructor_df.drop('url')
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp 
+from pyspark.sql.functions import current_timestamp, lit
 
 # COMMAND ----------
 
-constructor_final_df = constructor_df_drop.withColumnRenamed('constructorId', 'constructor_id')\
-                                          .withColumnRenamed('constructorRef', 'constructor_ref')
+constructor_final_df = constructor_df_drop.withColumnRenamed('constructorId', 'constructor_id') \
+                                          .withColumnRenamed('constructorRef', 'constructor_ref') \
+                                          .withColumn('data_source', lit(v_data_source))
                                          
 
 # COMMAND ----------
@@ -102,3 +108,7 @@ constructor_final_df2.write.mode('overwrite').parquet(f'{processed_folder_path}/
 
 # %fs
 # ls /mnt/f1datalakelearn/processed-silver/constructors
+
+# COMMAND ----------
+
+dbutils.notebook.exit('Success')
