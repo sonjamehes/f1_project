@@ -14,6 +14,11 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text('param_data_source', "")
+v_data_source = dbutils.widgets.get('param_data_source')
+
+# COMMAND ----------
+
 # display(dbutils.fs.mounts())
 
 # COMMAND ----------
@@ -67,12 +72,13 @@ pit_stop_df = spark.read \
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp
+from pyspark.sql.functions import current_timestamp, lit
 
 # COMMAND ----------
 
 pit_stop_renamed = pit_stop_df.withColumnRenamed('driverId', 'driver_id') \
-                              .withColumnRenamed ('raceId', 'race_id') 
+                              .withColumnRenamed ('raceId', 'race_id') \
+                              .withColumn('data_source', lit(v_data_source))
 
 
 # COMMAND ----------
@@ -87,3 +93,7 @@ pit_stop_renamed = add_ingestion_date(pit_stop_renamed)
 # COMMAND ----------
 
 pit_stop_renamed.write.mode('overwrite').parquet(f'{processed_folder_path}/pit_stops')
+
+# COMMAND ----------
+
+dbutils.notebook.exit('Success')
