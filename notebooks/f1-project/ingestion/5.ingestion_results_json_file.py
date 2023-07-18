@@ -8,6 +8,11 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text('param_data_source', "")
+v_data_source = dbutils.widgets.get('param_data_source')
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/config"
 # MAGIC
 
@@ -60,19 +65,20 @@ results_df = spark.read \
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp
+from pyspark.sql.functions import current_timestamp, lit
 
 # COMMAND ----------
 
 results_renamed = results_df.withColumnRenamed('resultId', 'result_id')\
-                            .withColumnRenamed('raceId', 'race_id') \
+                            .withColumnRenamed('raceId', 'race_id')\
                             .withColumnRenamed('driverId', 'driver_id')\
                             .withColumnRenamed('constructorId', 'constructor_id')\
                             .withColumnRenamed('positionTest', 'position_text')\
                             .withColumnRenamed('positionOrder', 'position_order')\
                             .withColumnRenamed('fastestLap', 'fastest_lap')\
                             .withColumnRenamed('fastestLapTime', 'fastest_lap_time')\
-                            .withColumnRenamed('FasttestLapSpeed', 'fastest_lap_speed')
+                            .withColumnRenamed('FasttestLapSpeed', 'fastest_lap_speed')\
+                            .withColumn('data_source', lit(v_data_source))
 
 
 # COMMAND ----------
@@ -85,7 +91,7 @@ final_results_df = results_renamed.drop('statusId')
 
 # COMMAND ----------
 
-display(final_results_df)
+# display(final_results_df)
 
 # COMMAND ----------
 
@@ -94,3 +100,7 @@ final_results_df.write.mode('overwrite').partitionBy('race_id').parquet(f'{proce
 # COMMAND ----------
 
 # display(spark.read.parquet('/mnt/f1datalakelearn/processed-silver/results'))
+
+# COMMAND ----------
+
+dbutils.notebook.exit('Success')
