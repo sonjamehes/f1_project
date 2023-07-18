@@ -75,7 +75,7 @@ display(final_results_df)
 
 # COMMAND ----------
 
-final_results_df.write.mode('overwrite').parquet('/mnt/f1datalakelearn/processed-silver/results')
+final_results_df.write.mode('overwrite').partitionBy('race_id').parquet('/mnt/f1datalakelearn/processed-silver/results')
 
 # COMMAND ----------
 
