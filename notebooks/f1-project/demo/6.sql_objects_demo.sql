@@ -103,3 +103,62 @@ SHOW TABLES in demo
 
 -- COMMAND ----------
 
+-- MAGIC %md
+-- MAGIC ###Learning Objectives - EXTERNAL TABLES (dropping the table won't remove the data from the external sources. it will only remove it from demo db(in this case) in databricks)
+-- MAGIC ####1.Create external table using Python
+-- MAGIC ####2.Create external table using SQL
+-- MAGIC ####3.Effect of dropping a managed table
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %python
+-- MAGIC race_df.write.format('parquet').option('path', f'{presentation_folder_path}/race_results_ext_py').saveAsTable('demo.race_results_python_ext_py')
+
+-- COMMAND ----------
+
+describe extended demo.race_results_python_ext_py
+
+-- COMMAND ----------
+
+-- MAGIC %fs
+-- MAGIC ls /mnt/f1datalakelearn/presentation-gold
+
+-- COMMAND ----------
+
+CREATE TABLE demo.race_results_python_ext_sql
+(
+  race_year INT,
+  race_name STRING,
+  race_date TIMESTAMP,
+  circuit_location STRING,
+  driver_name STRING,
+  driver_number INT,
+  driver_nationality STRING,
+  team STRING,
+  grid INT,
+  fastest_lap INT,
+  race_time STRING,
+  points FLOAT,
+  position INT,
+  created_date TIMESTAMP
+)
+USING PARQUET
+LOCATION "/mnt/f1datalakelearn/presentation-gold/race_results_python_ext_sql"
+
+-- COMMAND ----------
+
+INSERT INTO demo.race_results_python_ext_sql
+SELECT * FROM demo.race_results_python_ext_py where race_year= 2020
+
+-- COMMAND ----------
+
+SELECT * FROM demo.race_results_python_ext_sql
+
+-- COMMAND ----------
+
+SHOW TABLES IN demo;
+
+-- COMMAND ----------
+
+drop table demo.race_results_python_ext_sql
