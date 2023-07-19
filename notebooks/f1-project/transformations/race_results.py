@@ -17,30 +17,30 @@
 # COMMAND ----------
 
 drivers = spark.read.parquet(f'{processed_folder_path}/drivers').withColumnRenamed("name", "driver_name").withColumnRenamed("number", "driver_number").withColumnRenamed("nationality", "driver_nationality")
-races = spark.read.parquet(f'{processed_folder_path}/races').withColumnRenamed("race_timestamp", "race_date").withColumnRenamed("name", "race_name").filter('race_year = 2020')
-circuits = spark.read.parquet(f'{processed_folder_path}/circuits').withColumnRenamed("location", "circuit_location").filter('circuit_location = "Abu Dhabi"')
+races = spark.read.parquet(f'{processed_folder_path}/races').withColumnRenamed("race_timestamp", "race_date").withColumnRenamed("name", "race_name")#.filter('race_year = 2020')
+circuits = spark.read.parquet(f'{processed_folder_path}/circuits').withColumnRenamed("location", "circuit_location")#.filter('circuit_location = "Abu Dhabi"')
 constructors = spark.read.parquet(f'{processed_folder_path}/constructors').withColumnRenamed("name", "team")
 results = spark.read.parquet(f'{processed_folder_path}/results').withColumnRenamed("time", "race_time")
 
 # COMMAND ----------
 
-display(drivers)
+# display(drivers)
 
 # COMMAND ----------
 
-display(constructors)
+# display(constructors)
 
 # COMMAND ----------
 
-display(races)
+# display(races)
 
 # COMMAND ----------
 
-display(circuits)
+# display(circuits)
 
 # COMMAND ----------
 
-display(results)
+# display(results)
 
 # COMMAND ----------
 
@@ -48,7 +48,7 @@ from pyspark.sql.functions import current_timestamp, col
 
 # COMMAND ----------
 
-results_driver = results.join(drivers, results.driver_id == drivers.driver_id, 'left') \
+results_driver = results.join(drivers, results.driver_id == drivers.driver_id, 'inner') \
                         .join(races, results.race_id == races.race_id, 'inner') \
                         .join(circuits, races.circuit_id == circuits.circuit_id, 'inner') \
                         .join(constructors, results.constructor_id == constructors.constructor_id, 'inner') \
@@ -61,8 +61,16 @@ results_driver = add_ingestion_date(results_driver)
 
 # COMMAND ----------
 
-results_final = results_driver.sort(col('points'), ascending = False)
+display(results_driver)
 
 # COMMAND ----------
 
-results_final.write.mode('overwrite').parquet(f'{presentation_folder_path}/presentation')
+results_driver.write.mode('overwrite').parquet(f'{presentation_folder_path}/presentation')
+
+# COMMAND ----------
+
+check = spark.read.parquet(f'{presentation_folder_path}/presentation').filter('race_year = 2020').filter('circuit_location = "Abu Dhabi"')
+
+# COMMAND ----------
+
+display(check.sort(col('points'), ascending = False))
