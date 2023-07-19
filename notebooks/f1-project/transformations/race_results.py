@@ -69,8 +69,8 @@ results_driver.write.mode('overwrite').parquet(f'{presentation_folder_path}/race
 
 # COMMAND ----------
 
-check = spark.read.parquet(f'{presentation_folder_path}/race_results').filter('race_year = 2020').filter('circuit_location = "Abu Dhabi"')
+# check = spark.read.parquet(f'{presentation_folder_path}/race_results').filter('race_year = 2020').filter('circuit_location = "Abu Dhabi"')
 
 # COMMAND ----------
 
-display(check.sort(col('points'), ascending = False))
+# display(check.sort(col('points'), ascending = False))
