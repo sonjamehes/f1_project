@@ -24,23 +24,23 @@ results = spark.read.parquet(f'{processed_folder_path}/results').withColumnRenam
 
 # COMMAND ----------
 
-# display(drivers)
+display(drivers)
 
 # COMMAND ----------
 
-# display(constructors)
+display(constructors)
 
 # COMMAND ----------
 
-# display(races)
+display(races)
 
 # COMMAND ----------
 
-# display(circuits)
+display(circuits)
 
 # COMMAND ----------
 
-# display(results)
+display(results)
 
 # COMMAND ----------
 
@@ -52,7 +52,7 @@ results_driver = results.join(drivers, results.driver_id == drivers.driver_id, '
                         .join(races, results.race_id == races.race_id, 'inner') \
                         .join(circuits, races.circuit_id == circuits.circuit_id, 'inner') \
                         .join(constructors, results.constructor_id == constructors.constructor_id, 'inner') \
-                        .select(races.race_year, races.race_name, races.race_date,circuits.circuit_location, drivers.driver_name, drivers.driver_number, drivers.driver_nationality,constructors.team, results.grid, results.fastest_lap, results.race_time, results.points, position ) 
+                        .select(races.race_year, races.race_name, races.race_date,circuits.circuit_location, drivers.driver_name, drivers.driver_number, drivers.driver_nationality,constructors.team, results.grid, results.fastest_lap, results.race_time, results.points, results.position ) 
 
 
 # COMMAND ----------
@@ -61,7 +61,7 @@ results_driver = add_ingestion_date(results_driver)
 
 # COMMAND ----------
 
-display(results_driver)
+# display(results_driver)
 
 # COMMAND ----------
 
@@ -69,8 +69,8 @@ results_driver.write.mode('overwrite').parquet(f'{presentation_folder_path}/race
 
 # COMMAND ----------
 
-# check = spark.read.parquet(f'{presentation_folder_path}/race_results').filter('race_year = 2020').filter('circuit_location = "Abu Dhabi"')
+check = spark.read.parquet(f'{presentation_folder_path}/race_results').filter('race_year = 2020').filter('circuit_location = "Abu Dhabi"')
 
 # COMMAND ----------
 
-# display(check.sort(col('points'), ascending = False))
+display(check.sort(col('points'), ascending = False))
