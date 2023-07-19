@@ -40,3 +40,32 @@ race_df = spark.sql(f'select * from v_race_results where race_year = {param_race
 # COMMAND ----------
 
 display(race_df)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC #Access dataframes using SQL
+# MAGIC
+# MAGIC ##Objectives
+# MAGIC ###1.Create global temporary views on dataframes
+# MAGIC ###2.Access the from from SQL cell
+# MAGIC ###3.Access the view from Python cell
+# MAGIC ###4.Access the view from another notebook
+
+# COMMAND ----------
+
+race_results.createOrReplaceGlobalTempView("gv_global_race")
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC SHOW TABLES IN global_temp;
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select * from global_temp.gv_global_race where race_year = 2020
+
+# COMMAND ----------
+
+display(spark.sql("select * from global_temp.gv_global_race where race_year = 2019"))
