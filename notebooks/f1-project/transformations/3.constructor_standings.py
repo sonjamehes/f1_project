@@ -40,4 +40,13 @@ display(final_df.filter('race_year = 2020'))
 
 # COMMAND ----------
 
-# final_df.write.mode('overwrite').parquet(f'{presentation_folder_path}/constructor_standings')
+final_df.write.mode('overwrite').parquet(f'{presentation_folder_path}/constructor_standings')
+
+# COMMAND ----------
+
+# display(dbutils.fs.mounts())
+
+# COMMAND ----------
+
+# %fs
+# ls /mnt/f1datalakelearn/presentation-gold
