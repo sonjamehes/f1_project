@@ -165,7 +165,7 @@ races_selected_df = races_with_timestamp.select(col('raceId').alias('race_id'), 
 
 # COMMAND ----------
 
-races_selected_df.write.mode('overwrite').partitionBy('race_year').parquet(f'{processed_folder_path}/races')
+races_selected_df.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.race_year')
 
 # COMMAND ----------
 
