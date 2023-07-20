@@ -7,7 +7,7 @@ select
   from f1_presentation.calculated_race_results
     where race_year between 2010 and 2020
 group by team_name
-having count(1) > 50
+having count(1) > 100
 order by avg_points desc
 
 
@@ -21,5 +21,5 @@ select
   from f1_presentation.calculated_race_results
     where race_year between 2001 and 2010
 group by team_name
-having count(1) > 50
+having count(1) > 100
 order by avg_points desc
