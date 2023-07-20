@@ -36,8 +36,12 @@ final_df = driver_standings_df.withColumn('rank', rank().over(driver_rank_spec))
 
 # COMMAND ----------
 
-display(final_df.filter('race_year = 2020'))
+# display(final_df.filter('race_year = 2020'))
 
 # COMMAND ----------
 
-final_df.write.mode('overwrite').parquet(f'{processed_folder_path}/driver_standings')
+final_df.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.driver_standings')
+
+# COMMAND ----------
+
+dbutils.notebook.exit('Success')
