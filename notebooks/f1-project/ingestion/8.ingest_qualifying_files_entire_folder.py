@@ -99,7 +99,7 @@ qualifying_renamed = add_ingestion_date(qualifying_renamed)
 
 # COMMAND ----------
 
-qualifying_renamed .write.mode('overwrite').parquet(f'{processed_folder_path}/qualifying')
+qualifying_renamed.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.qualifying')
 
 # COMMAND ----------
 
