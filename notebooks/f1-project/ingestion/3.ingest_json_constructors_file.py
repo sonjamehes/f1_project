@@ -98,7 +98,7 @@ constructor_final_df = constructor_df_drop.withColumnRenamed('constructorId', 'c
 
 # COMMAND ----------
 
-constructor_final_df2.write.mode('overwrite').parquet(f'{processed_folder_path}/constructors')
+constructor_final_df2.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.constructors')
 
 # COMMAND ----------
 
