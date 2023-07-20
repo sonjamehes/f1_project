@@ -96,7 +96,7 @@ final_results_df = results_renamed.drop('statusId')
 
 # COMMAND ----------
 
-final_results_df.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.results')
+final_results_df.write.mode('overwrite').partitionBy('race_id').format('parquet').saveAsTable('f1_processed.results')
 
 # COMMAND ----------
 
