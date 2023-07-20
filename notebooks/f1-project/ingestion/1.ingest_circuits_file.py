@@ -18,6 +18,15 @@ v_data_source = dbutils.widgets.get('param_data_source')
 
 # COMMAND ----------
 
+dbutils.widgets.text('param_file_date', "2021-03-21")
+v_file_date = dbutils.widgets.get('param_file_date')
+
+# COMMAND ----------
+
+v_file_date
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/config"
 # MAGIC
 
@@ -70,19 +79,16 @@ circuit_schema = StructType(fields=[
 circuits_df = spark.read \
 .option("header", True) \
 .schema(circuit_schema) \
-.csv(f"{raw_folder_path}/circuits.csv")
+.csv(f"{raw_folder_path}/{v_file_date}/circuits.csv")
 
 # COMMAND ----------
 
-## see all the mounts, search to get to the circuits.csv file
 # display(dbutils.fs.mounts())
 
 # COMMAND ----------
 
-# # list everything inside the raw-bronze container so we can copy the file path for circuits.csv and use it in the read.csv method
-
 # %fs
-# ls /mnt/f1datalakelearn/raw-bronze
+# ls /mnt/f1datalakelearn/raw-bronze/2021-03-21
 
 # COMMAND ----------
 
@@ -147,12 +153,8 @@ circuits_renamed_df = circuits_selected_df.withColumnRenamed('circuitId', 'circu
                                             .withColumnRenamed('lat', 'latitude') \
                                             .withColumnRenamed('lng', 'longitude') \
                                             .withColumnRenamed('alt', 'altitude') \
-                                            .withColumn('data_source', lit(v_data_source))
-
-
-# COMMAND ----------
-
-# display(circuits_renamed_df)
+                                            .withColumn('data_source', lit(v_data_source)) \
+                                            .withColumn('file_date', lit(v_file_date))
 
 # COMMAND ----------
 
