@@ -9,7 +9,7 @@
 
 # COMMAND ----------
 
-dbutils.widgets.help()
+# dbutils.widgets.help()
 
 # COMMAND ----------
 
@@ -152,7 +152,7 @@ circuits_renamed_df = circuits_selected_df.withColumnRenamed('circuitId', 'circu
 
 # COMMAND ----------
 
-display(circuits_renamed_df)
+# display(circuits_renamed_df)
 
 # COMMAND ----------
 
@@ -187,7 +187,12 @@ circuits_final_df = add_ingestion_date(circuits_renamed_df)
 
 # COMMAND ----------
 
-circuits_final_df.write.mode('overwrite').parquet(f'{processed_folder_path}/circuits')
+# circuits_final_df.write.mode('overwrite').parquet(f'{processed_folder_path}/circuits') ##this will only save the df into ADLS in parquet format
+
+# COMMAND ----------
+
+##this will only save the df into ADLS in parquet format and also save the table under the f1_processsed database that we've created (as a managed table)
+circuits_final_df.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.circuits')
 
 # COMMAND ----------
 
@@ -196,4 +201,8 @@ circuits_final_df.write.mode('overwrite').parquet(f'{processed_folder_path}/circ
 
 # COMMAND ----------
 
-# display(spark.read.parquet(f'{processed_folder_path}/circuits'))
+display(spark.read.parquet(f'{processed_folder_path}/circuits'))
+
+# COMMAND ----------
+
+dbutils.notebook.exit('Success')
