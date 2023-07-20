@@ -65,7 +65,7 @@ results_driver = add_ingestion_date(results_driver)
 
 # COMMAND ----------
 
-results_driver.write.mode('overwrite').parquet(f'{presentation_folder_path}/race_results')
+results_driver.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.race_results')
 
 # COMMAND ----------
 
@@ -74,3 +74,7 @@ results_driver.write.mode('overwrite').parquet(f'{presentation_folder_path}/race
 # COMMAND ----------
 
 # display(check.sort(col('points'), ascending = False))
+
+# COMMAND ----------
+
+dbutils.notebook.exit('Success')
