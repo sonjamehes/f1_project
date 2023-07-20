@@ -38,6 +38,7 @@ schema_results = StructType(fields=[
                               StructField('milliseconds', IntegerType(), True),
                               StructField('number', IntegerType(), True),
                               StructField('points', FloatType(), True),
+                              StructField('position', IntegerType(), False),
                               StructField('positionOrder', IntegerType(), False),
                               StructField('positionText', StringType(), False),
                               StructField('raceId', IntegerType(), False), 
@@ -95,7 +96,7 @@ final_results_df = results_renamed.drop('statusId')
 
 # COMMAND ----------
 
-final_results_df.write.mode('overwrite').partitionBy('race_id').parquet(f'{processed_folder_path}/results')
+final_results_df.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.results')
 
 # COMMAND ----------
 
