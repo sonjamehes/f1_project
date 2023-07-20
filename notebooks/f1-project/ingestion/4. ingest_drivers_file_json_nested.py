@@ -123,7 +123,7 @@ final_df = drivers_df_renamed.drop('url')
 
 # COMMAND ----------
 
-final_df.write.mode('overwrite').parquet(f'{processed_folder_path}/drivers')
+final_df.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.drivers')
 
 # COMMAND ----------
 
