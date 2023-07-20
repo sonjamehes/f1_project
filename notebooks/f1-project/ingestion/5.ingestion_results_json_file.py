@@ -13,6 +13,11 @@ v_data_source = dbutils.widgets.get('param_data_source')
 
 # COMMAND ----------
 
+dbutils.widgets.text('param_file_date', "2021-03-28")
+v_file_date = dbutils.widgets.get('param_file_date')
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/config"
 # MAGIC
 
@@ -54,15 +59,11 @@ schema_results = StructType(fields=[
 
 results_df = spark.read \
     .schema(schema_results) \
-    .json(f'{raw_folder_path}/results.json')
+    .json(f'{raw_folder_path}/{v_file_date}/results.json')
 
 # COMMAND ----------
 
 # results_df.printSchema()
-
-# COMMAND ----------
-
-# display(results_df)
 
 # COMMAND ----------
 
@@ -79,7 +80,8 @@ results_renamed = results_df.withColumnRenamed('resultId', 'result_id')\
                             .withColumnRenamed('fastestLap', 'fastest_lap')\
                             .withColumnRenamed('fastestLapTime', 'fastest_lap_time')\
                             .withColumnRenamed('FasttestLapSpeed', 'fastest_lap_speed')\
-                            .withColumn('data_source', lit(v_data_source))
+                            .withColumn('data_source', lit(v_data_source)) \
+                            .withColumn('file_date', lit(v_file_date))
 
 
 # COMMAND ----------
@@ -96,7 +98,49 @@ final_results_df = results_renamed.drop('statusId')
 
 # COMMAND ----------
 
-final_results_df.write.mode('overwrite').partitionBy('race_id').format('parquet').saveAsTable('f1_processed.results')
+# MAGIC %md
+# MAGIC ####Method 1 for handling incremental load
+# MAGIC ######the below code will drop the partitions if they exist and append the data 
+
+# COMMAND ----------
+
+# for race_id_list in final_results_df.select("race_id").distinct().collect():
+#     if (spark._jsparkSession.catalog().tableExists("f1_processed.results")):
+#         spark.sql(f"ALTER TABLE f1_processed.results DROP IF EXISTS PARTITION (race_id = {race_id_list.race_id})")
+
+# COMMAND ----------
+
+# final_results_df.write.mode('append').partitionBy('race_id').format('parquet').saveAsTable('f1_processed.results')
+
+# COMMAND ----------
+
+# print(final_results_df.columns)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ####Method 2 for handling incremental load
+# MAGIC
+# MAGIC ######final_results_df.write.mode('overwrite').partitionBy('race_id').format('parquet').saveAsTable('f1_processed.results') --> will be used for the cut over file
+# MAGIC ######final_results_df.write.mode('overwrite').insertInto("f1_processed.results") --> will be used for the rest of the incremental files
+# MAGIC ######--> we will need the last column to be race_id, the one with the partition, so need to move it on the last position
+# MAGIC ######--> last but not least, don't forget to set the overwrite mode as DYNAMIC, otherwise "final_results_df.write.mode('overwrite').insertInto("f1_processed.results")" will overwrite the data too
+
+# COMMAND ----------
+
+spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
+
+# COMMAND ----------
+
+final_results_df = final_results_df.select('constructor_id', 'driver_id', 'fastest_lap', 'fastestLapSpeed', 'fastest_lap_time', 'grid', 'laps', 'milliseconds', 'number', 'points', 'position', 'position_order', 'positionText', 'race_id', 'rank',  'time', 'data_source', 'file_date', 'ingestion_date', 'result_id')
+                              
+
+# COMMAND ----------
+
+if (spark._jsparkSession.catalog().tableExists("f1_processed.results")):
+    final_results_df.write.mode('overwrite').insertInto("f1_processed.results")
+else:
+    final_results_df.write.mode('overwrite').partitionBy('race_id').format('parquet').saveAsTable('f1_processed.results')
 
 # COMMAND ----------
 
@@ -105,3 +149,16 @@ final_results_df.write.mode('overwrite').partitionBy('race_id').format('parquet'
 # COMMAND ----------
 
 dbutils.notebook.exit('Success')
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select race_id, count(1) 
+# MAGIC from f1_processed.results
+# MAGIC group by race_id
+# MAGIC order by race_id desc
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC -- drop table f1_processed.results
