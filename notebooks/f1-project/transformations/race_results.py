@@ -65,7 +65,7 @@ results_driver = add_ingestion_date(results_driver)
 
 # COMMAND ----------
 
-results_driver.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.race_results')
+results_driver.write.mode('overwrite').format('parquet').saveAsTable('f1_presentation.race_results')
 
 # COMMAND ----------
 
