@@ -9,6 +9,11 @@ v_data_source = dbutils.widgets.get('param_data_source')
 
 # COMMAND ----------
 
+dbutils.widgets.text('param_file_date', "2021-03-21")
+v_file_date = dbutils.widgets.get('param_file_date')
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/config"
 # MAGIC
 
@@ -40,7 +45,7 @@ constructor_schema = StructType(fields=[
 
 constructor_df = spark.read \
     .schema(constructor_schema) \
-    .json(f'{raw_folder_path}/constructors.json')
+    .json(f'{raw_folder_path}/{v_file_date}/constructors.json')
 
 # COMMAND ----------
 
@@ -80,7 +85,8 @@ from pyspark.sql.functions import current_timestamp, lit
 
 constructor_final_df = constructor_df_drop.withColumnRenamed('constructorId', 'constructor_id') \
                                           .withColumnRenamed('constructorRef', 'constructor_ref') \
-                                          .withColumn('data_source', lit(v_data_source))
+                                          .withColumn('data_source', lit(v_data_source)) \
+                                          .withColumn('file_date', lit(v_file_date))
                                          
 
 # COMMAND ----------
