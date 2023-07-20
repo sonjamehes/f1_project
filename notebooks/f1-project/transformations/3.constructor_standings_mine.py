@@ -30,3 +30,7 @@
 # COMMAND ----------
 
 # constructor_df.mode('overwrite').parquet(f'{presentation_folder_path}/constructor_standings')
+
+# COMMAND ----------
+
+dbutils.notebook.exit('Success')
