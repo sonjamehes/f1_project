@@ -89,7 +89,7 @@ lap_times_renamed = add_ingestion_date(lap_times_renamed)
 
 # COMMAND ----------
 
-lap_times_renamed.write.mode('overwrite').parquet(f'{processed_folder_path}/lap_times')
+lap_times_renamed.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.lap_times')
 
 # COMMAND ----------
 
