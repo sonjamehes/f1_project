@@ -19,6 +19,11 @@ v_data_source = dbutils.widgets.get('param_data_source')
 
 # COMMAND ----------
 
+dbutils.widgets.text('param_file_date', "2021-03-28")
+v_file_date = dbutils.widgets.get('param_file_date')
+
+# COMMAND ----------
+
 # display(dbutils.fs.mounts())
 
 # COMMAND ----------
@@ -57,7 +62,7 @@ pit_stop_schema = StructType(fields=[
 pit_stop_df = spark.read \
     .schema(pit_stop_schema) \
     .option('multiLine', True) \
-    .json(f'{raw_folder_path}/pit_stops.json') 
+    .json(f'{raw_folder_path}/{v_file_date}/pit_stops.json') 
 
 # COMMAND ----------
 
@@ -92,7 +97,11 @@ pit_stop_renamed = add_ingestion_date(pit_stop_renamed)
 
 # COMMAND ----------
 
-pit_stop_renamed.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.pit_stops')
+overwrite_partition (pit_stop_renamed, 'f1_processed', 'pit_stops', 'race_id')
+
+# COMMAND ----------
+
+# pit_stop_renamed.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.pit_stops')
 
 # COMMAND ----------
 
