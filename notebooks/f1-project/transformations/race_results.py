@@ -36,6 +36,10 @@ from pyspark.sql.functions import current_timestamp, col
 
 # COMMAND ----------
 
+display(results)
+
+# COMMAND ----------
+
 results_driver = results.join(drivers, results.driver_id == drivers.driver_id, 'inner') \
                         .join(races, results.result_race_id == races.race_id, 'inner') \
                         .join(circuits, races.circuit_id == circuits.circuit_id, 'inner') \
@@ -54,6 +58,10 @@ results_driver_final = add_ingestion_date(results_driver)
 
 # COMMAND ----------
 
+display(results_driver_final)
+
+# COMMAND ----------
+
 # results_driver.write.mode('overwrite').format('parquet').saveAsTable('f1_presentation.race_results')
 
 # COMMAND ----------
@@ -62,22 +70,12 @@ overwrite_partition (results_driver_final, 'f1_presentation', 'race_results', 'r
 
 # COMMAND ----------
 
-# %sql
-# select * from f1_presentation.race_results
+# MAGIC %sql
+# MAGIC select * from f1_presentation.race_results
 
 # COMMAND ----------
 
-# %sql
-# describe f1_presentation.race_results
-
-# COMMAND ----------
-
-# display(spark.read.parquet(f"{presentation_folder_path}/race_results"))
-
-# COMMAND ----------
-
-# %sql
-# drop table f1_presentation.race_results
+display(spark.read.parquet(f"{presentation_folder_path}/race_results"))
 
 # COMMAND ----------
 
