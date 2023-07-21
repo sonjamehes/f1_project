@@ -14,6 +14,11 @@ v_data_source = dbutils.widgets.get('param_data_source')
 
 # COMMAND ----------
 
+dbutils.widgets.text('param_file_date', "2021-03-28")
+v_file_date = dbutils.widgets.get('param_file_date')
+
+# COMMAND ----------
+
 # MAGIC %run "../includes/config"
 # MAGIC
 
@@ -50,7 +55,7 @@ lap_times_schema = StructType(fields=[
 
 lap_times_df = spark.read \
     .schema(lap_times_schema) \
-    .csv(f'{raw_folder_path}/lap_times') 
+    .csv(f'{raw_folder_path}/{v_file_date}/lap_times') 
 
 # COMMAND ----------
 
@@ -89,7 +94,11 @@ lap_times_renamed = add_ingestion_date(lap_times_renamed)
 
 # COMMAND ----------
 
-lap_times_renamed.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.lap_times')
+# lap_times_renamed.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.lap_times')
+
+# COMMAND ----------
+
+overwrite_partition (lap_times_renamed, 'f1_processed', 'lap_times', 'race_id')
 
 # COMMAND ----------
 
