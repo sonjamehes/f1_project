@@ -75,7 +75,7 @@ results_renamed = results_df.withColumnRenamed('resultId', 'result_id')\
                             .withColumnRenamed('raceId', 'race_id')\
                             .withColumnRenamed('driverId', 'driver_id')\
                             .withColumnRenamed('constructorId', 'constructor_id')\
-                            .withColumnRenamed('positionTest', 'position_text')\
+                            .withColumnRenamed('positionText', 'position_text')\
                             .withColumnRenamed('positionOrder', 'position_order')\
                             .withColumnRenamed('fastestLap', 'fastest_lap')\
                             .withColumnRenamed('fastestLapTime', 'fastest_lap_time')\
@@ -128,37 +128,24 @@ final_results_df = results_renamed.drop('statusId')
 
 # COMMAND ----------
 
-spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
+# spark.conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
 
 # COMMAND ----------
 
-final_results_df = final_results_df.select('constructor_id', 'driver_id', 'fastest_lap', 'fastestLapSpeed', 'fastest_lap_time', 'grid', 'laps', 'milliseconds', 'number', 'points', 'position', 'position_order', 'positionText', 'race_id', 'rank',  'time', 'data_source', 'file_date', 'ingestion_date', 'result_id')
+# final_results_df = final_results_df.select( 'result_id','constructor_id', 'driver_id', 'fastest_lap', 'fastestLapSpeed', 'fastest_lap_time', 'grid', 'laps', 'milliseconds', 'number', 'points', 'position', 'position_order', 'position_Text', 'rank',  'time', 'data_source', 'file_date', 'ingestion_date', 'race_id')
                               
 
 # COMMAND ----------
 
-if (spark._jsparkSession.catalog().tableExists("f1_processed.results")):
-    final_results_df.write.mode('overwrite').insertInto("f1_processed.results")
-else:
-    final_results_df.write.mode('overwrite').partitionBy('race_id').format('parquet').saveAsTable('f1_processed.results')
+# if (spark._jsparkSession.catalog().tableExists("f1_processed.results")):
+#     final_results_df.write.mode('overwrite').insertInto("f1_processed.results")
+# else:
+#     final_results_df.write.mode('overwrite').partitionBy('race_id').format('parquet').saveAsTable('f1_processed.results')
 
 # COMMAND ----------
 
-# display(spark.read.parquet('/mnt/f1datalakelearn/processed-silver/results'))
+overwrite_partition (final_results_df, 'f1_processed', 'results', 'race_id')
 
 # COMMAND ----------
 
 dbutils.notebook.exit('Success')
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC select race_id, count(1) 
-# MAGIC from f1_processed.results
-# MAGIC group by race_id
-# MAGIC order by race_id desc
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC -- drop table f1_processed.results
