@@ -38,14 +38,20 @@ def mount_adls(storage_account_name, container_name):
 
 # COMMAND ----------
 
-display(mount_adls('f1datalakelearn', 'raw-bronze'))
-
-
-# COMMAND ----------
-
-display(mount_adls('f1datalakelearn', 'processed-silver'))
-
+mount_adls("raw-bronze")
 
 # COMMAND ----------
 
-display(mount_adls('f1datalakelearn', 'presentation-gold'))
+mount_adls("processed-silver")
+
+# COMMAND ----------
+
+mount_adls("presentation-gold")
+
+# COMMAND ----------
+
+mount_adls("demo")
+
+# COMMAND ----------
+
+display(dbutils.fs.mounts())
