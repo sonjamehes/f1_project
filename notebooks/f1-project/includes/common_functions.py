@@ -6,14 +6,20 @@ def add_ingestion_date(input_df):
 
 # COMMAND ----------
 
+# def re_arrange_partition_column(input_df, part_col):   
+#     col_list = []
+#     for col in input_df.schema.names:
+#         if col != part_col:
+#             col_list.append(col)
+#     col_list.append(part_col)
+#     output_df = input_df.select(col_list)
+#     return output_df
+
+# COMMAND ----------
+
 def re_arrange_partition_column(input_df, part_col):   
-    col_list = []
-    for col in input_df.schema.names:
-        if col != part_col:
-            col_list.append(col)
-    col_list.append(part_col)
-    output_df = input_df.select(col_list)
-    return output_df
+    col_list = [col for col in input_df.schema.names if col != part_col]
+    return input_df.select(col_list + [part_col])
 
 # COMMAND ----------
 
@@ -24,3 +30,6 @@ def overwrite_partition (input_df, db_name, table_name, part_col):
         output_df.write.mode('overwrite').insertInto(f"{db_name}.{table_name}")
     else:
         output_df.write.mode('overwrite').partitionBy(part_col).format('parquet').saveAsTable(f"{db_name}.{table_name}")
+
+# COMMAND ----------
+
