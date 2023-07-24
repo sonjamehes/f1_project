@@ -112,7 +112,7 @@ races_with_timestamp = races_df.withColumn('race_timestamp',to_timestamp(concat(
 
 # COMMAND ----------
 
-# display(races_with_timestamp)
+display(races_with_timestamp)
 
 # COMMAND ----------
 
@@ -149,11 +149,11 @@ from pyspark.sql.functions import col
 
 # COMMAND ----------
 
-races_selected_df = races_with_timestamp.select(col('raceId').alias('race_id'), col('year').alias('race_year'), col('round'), col('circuitId').alias('circuit_id'), col('name'), col('ingestion_date'), col('race_timestamp'))
+races_selected_df = races_with_timestamp.select(col('raceId').alias('race_id'), col('year').alias('race_year'), col('round'), col('circuitId').alias('circuit_id'), col('name'), col('ingestion_date'), col('race_timestamp'), col('file_date'))
 
 # COMMAND ----------
 
-# display(races_selected_df)
+display(races_selected_df)
 
 # COMMAND ----------
 
@@ -175,12 +175,12 @@ races_selected_df.write.mode('overwrite').partitionBy('race_year').format('parqu
 
 # COMMAND ----------
 
-# display(dbutils.fs.mounts()
+# display(dbutils.fs.mounts())
 
 # COMMAND ----------
 
 # %fs
-# ls /mnt/f1datalakelearn/processed-silver/races
+# ls /mnt/f1datalakelearn/presentation-gold/races
 
 # COMMAND ----------
 
@@ -188,4 +188,14 @@ races_selected_df.write.mode('overwrite').partitionBy('race_year').format('parqu
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC select distinct(file_date) from f1_processed.races order by file_date
+
+# COMMAND ----------
+
 dbutils.notebook.exit('Success')
+
+# COMMAND ----------
+
+# %sql
+# drop table f1_raw.races
