@@ -502,3 +502,54 @@ for driver_id in range (3,20):
 
 # MAGIC %md
 # MAGIC #!!! transaction logs are kept up to 30  days
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ###Convert Parquet to Delta
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC CREATE TABLE IF NOT EXISTS f1_demo.drivers_convert_to_delta (
+# MAGIC   driverId INT,
+# MAGIC   dob DATE,
+# MAGIC   forename STRING,
+# MAGIC   surname STRING,
+# MAGIC   createdDate DATE,
+# MAGIC   updatedDate DATE
+# MAGIC )
+# MAGIC USING PARQUET 
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC insert into f1_demo.drivers_convert_to_delta
+# MAGIC select * from f1_demo.drivers_merge
+# MAGIC
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC convert to delta f1_demo.drivers_convert_to_delta
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ###for external file
+
+# COMMAND ----------
+
+df = spark.table("f1_demo.drivers_convert_to_delta")
+
+# COMMAND ----------
+
+df.write.format('parquet').save('/mnt/f1datalakelearn/demo/drivers_convert_to_delta_new')
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC convert to delta parquet.`/mnt/f1datalakelearn/demo/drivers_convert_to_delta_new`
+
+# COMMAND ----------
+
