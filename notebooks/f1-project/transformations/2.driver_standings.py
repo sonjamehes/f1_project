@@ -22,16 +22,12 @@ v_file_date = dbutils.widgets.get('param_file_date')
 # COMMAND ----------
 
 race_results_df_list = spark.read.parquet(f'{presentation_folder_path}/race_results')\
-    .filter(f"file_date='{v_file_date}'" )\
-    .select('race_year') \
-    .distinct() \
-    .collect()
+    .filter(f"file_date='{v_file_date}'" )
+
 
 # COMMAND ----------
 
-race_year_list = []
-for race_year in race_results_df_list:
-    race_year_list.append(race_year.race_year)
+race_year_list = dataframe_columns_to_list(race_results_df_list, 'race_year')
 
 # COMMAND ----------
 
