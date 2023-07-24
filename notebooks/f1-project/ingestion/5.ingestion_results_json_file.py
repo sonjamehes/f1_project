@@ -94,7 +94,7 @@ final_results_df = results_renamed.drop('statusId')
 
 # COMMAND ----------
 
-# display(final_results_df)
+display(final_results_df)
 
 # COMMAND ----------
 
@@ -148,4 +148,17 @@ overwrite_partition (final_results_df, 'f1_processed', 'results', 'race_id')
 
 # COMMAND ----------
 
+display(spark.read.parquet(f'{processed_folder_path}/results'))
+
+# COMMAND ----------
+
+display(spark.read.parquet(f'{presentation_folder_path}/race_results'))
+
+# COMMAND ----------
+
 dbutils.notebook.exit('Success')
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC drop TABLE f1_processed.results
