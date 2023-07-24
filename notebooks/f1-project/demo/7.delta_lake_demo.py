@@ -340,3 +340,117 @@ deltaTable.alias('tgt') \
 
 # MAGIC %sql
 # MAGIC select * from f1_demo.drivers_merge
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC # 1. History & Versioning
+# MAGIC # 2. Time Travel
+# MAGIC # 3. Vacuum
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC
+# MAGIC describe history f1_demo.drivers_merge
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select * from f1_demo.drivers_merge version as of 1
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select * from f1_demo.drivers_merge version as of 2
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select * from f1_demo.drivers_merge timestamp as of '2023-07-24T13:20:37.000+0000'
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ####history and versioning pyspark way
+
+# COMMAND ----------
+
+df= spark.read.format('delta').option('timestampAsOf', '2023-07-24T13:20:37.000+0000').load('/mnt/f1datalakelearn/demo/drivers_merge')
+
+# COMMAND ----------
+
+display(df)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##Vacuum - removes history that is older than 7 days
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC VACUUM f1_demo.drivers_merge
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select * from f1_demo.drivers_merge timestamp as of '2023-07-24T13:20:37.000+0000'
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ###if I need to delete history immediatly
+# MAGIC ##### first run without the  "spark.databricks.delta.retentionDurationCheck.enabled = false". it will error, in the error I will have this line. I will copy it in my code, to confirm that I really want to delete the data, even though it has a retention less than 7 days
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC set spark.databricks.delta.retentionDurationCheck.enabled = false;
+# MAGIC VACUUM f1_demo.drivers_merge retain 0 hours
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##versioning
+# MAGIC ######will delete a record and then will restore it
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC
+# MAGIC delete from f1_demo.drivers_merge where driverId = 1
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select * from f1_demo.drivers_merge order by driverId
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC describe history f1_demo.drivers_merge
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select * from f1_demo.drivers_merge version as of 9
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ####add back the deleted row through a merge of our current table with the prior version of the table 
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC MERGE INTO f1_demo.drivers_merge tgt
+# MAGIC USING f1_demo.drivers_merge version as of 9 src
+# MAGIC on (tgt.driverId = src.driverId)
+# MAGIC WHEN NOT MATCHED THEN
+# MAGIC   INSERT *
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select * from f1_demo.drivers_merge 
