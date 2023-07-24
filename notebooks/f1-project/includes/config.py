@@ -2,6 +2,7 @@
 raw_folder_path = '/mnt/f1datalakelearn/raw-bronze'
 processed_folder_path = '/mnt/f1datalakelearn/processed-silver'
 presentation_folder_path = '/mnt/f1datalakelearn/presentation-gold'
+demo_folder_path = '/mnt/f1datalakelearn/demo'
 
 # COMMAND ----------
 
