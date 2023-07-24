@@ -33,3 +33,13 @@ def overwrite_partition (input_df, db_name, table_name, part_col):
 
 # COMMAND ----------
 
+def dataframe_columns_to_list(df_input, column_name):
+    df_row_list = df_input.select(column_name) \
+    .distinct() \
+    .collect()
+
+    column_value_list = [row[column_name] for row in df_row_list]
+    return column_value_list
+
+# COMMAND ----------
+
