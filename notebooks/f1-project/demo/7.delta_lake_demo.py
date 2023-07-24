@@ -94,4 +94,12 @@ display(result_external_df)
 
 # COMMAND ----------
 
-results_df.write.format('delta').mode('overwrite').partitionBy('constructorId').saveAsTable("f1_demo.results_managed")
+results_df.write.format('delta').mode('overwrite').partitionBy('constructorId').saveAsTable("f1_demo.results_partitioned")
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC show partitions f1_demo.results_partitioned
+
+# COMMAND ----------
+
