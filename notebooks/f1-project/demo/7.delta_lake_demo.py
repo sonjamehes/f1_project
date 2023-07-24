@@ -454,3 +454,51 @@ display(df)
 
 # MAGIC %sql
 # MAGIC select * from f1_demo.drivers_merge 
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##Transaction Logs
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC CREATE TABLE IF NOT EXISTS f1_demo.drivers_txn (
+# MAGIC   driverId INT,
+# MAGIC   dob DATE,
+# MAGIC   forename STRING,
+# MAGIC   surname STRING,
+# MAGIC   createdDate DATE,
+# MAGIC   updatedDate DATE
+# MAGIC )
+# MAGIC USING DELTA 
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC desc history f1_demo.drivers_txn
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC insert into f1_demo.drivers_txn
+# MAGIC select * from f1_demo.drivers_merge
+# MAGIC where driverId = 2;
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC delete from f1_demo.drivers_txn
+# MAGIC where driverId = 2;
+
+# COMMAND ----------
+
+for driver_id in range (3,20):
+    spark.sql(f"""INSERT INTO f1_demo.drivers_txn
+                 SELECT * FROM f1_demo.drivers_merge
+                 WHERE driverId = {driver_id}""")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC #!!! transaction logs are kept up to 30  days
