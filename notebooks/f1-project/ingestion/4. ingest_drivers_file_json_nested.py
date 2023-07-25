@@ -129,7 +129,7 @@ final_df = drivers_df_renamed.drop('url')
 
 # COMMAND ----------
 
-final_df.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.drivers')
+final_df.write.mode('overwrite').format('delta').saveAsTable('f1_processed.drivers')
 
 # COMMAND ----------
 
