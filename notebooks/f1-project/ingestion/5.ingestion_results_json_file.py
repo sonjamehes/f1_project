@@ -94,10 +94,6 @@ final_results_df = results_renamed.drop('statusId')
 
 # COMMAND ----------
 
-display(final_results_df)
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC ####Method 1 for handling incremental load
 # MAGIC ######the below code will drop the partitions if they exist and append the data 
@@ -144,21 +140,31 @@ display(final_results_df)
 
 # COMMAND ----------
 
-overwrite_partition (final_results_df, 'f1_processed', 'results', 'race_id')
+# overwrite_partition (final_results_df, 'f1_processed', 'results', 'race_id')
 
 # COMMAND ----------
 
-display(spark.read.parquet(f'{processed_folder_path}/results'))
+# MAGIC %md
+# MAGIC # De-dupe the dataframe
+# MAGIC ##### the ergast data had some duplicates, we will remove them using pyspark's drop duplicates
 
 # COMMAND ----------
 
-display(spark.read.parquet(f'{presentation_folder_path}/race_results'))
+final_results_df = final_results_df.dropDuplicates(['race_id', 'driver_id'])
+
+# COMMAND ----------
+
+merge_condition = 'tgt.result_id = src.result_id AND tgt.race_id = src.race_id'
+merge_delta_data(final_results_df, 'f1_processed', 'results', processed_folder_path, merge_condition, 'race_id')
+
+# COMMAND ----------
+
+# display(spark.read.parquet(f'{processed_folder_path}/results'))
+
+# COMMAND ----------
+
+# display(spark.read.parquet(f'{presentation_folder_path}/race_results'))
 
 # COMMAND ----------
 
 dbutils.notebook.exit('Success')
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC drop TABLE f1_processed.results
