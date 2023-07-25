@@ -1,4 +1,8 @@
 # Databricks notebook source
+# MAGIC %run "../includes/config"
+
+# COMMAND ----------
+
 from pyspark.sql.functions import current_timestamp
 def add_ingestion_date(input_df):
     output_df = input_df.withColumn('ingestion_date', current_timestamp())
@@ -30,6 +34,27 @@ def overwrite_partition (input_df, db_name, table_name, part_col):
         output_df.write.mode('overwrite').insertInto(f"{db_name}.{table_name}")
     else:
         output_df.write.mode('overwrite').partitionBy(part_col).format('parquet').saveAsTable(f"{db_name}.{table_name}")
+
+# COMMAND ----------
+
+def merge_delta_data(input_df, db_name, table_name, folder_path, merge_condition, part_col):
+    
+    spark.conf.set("spark.databricks.optimizer.dynamicPartitionPruning", "true") # use this when merging with partition columns, it will improive performance. add the partition column in the join
+
+    from delta.tables import DeltaTable
+    if (spark._jsparkSession.catalog().tableExists(f"{db_name}.{table_name}")):
+        deltaTable = DeltaTable.forPath(spark, f"{folder_path}/{table_name}")
+        deltaTable.alias("tgt").merge(
+            input_df.alias("src"),
+            merge_condition) \
+            .whenMatchedUpdateAll() \
+            .whenNotMatchedInsertAll() z
+            .execute()
+        
+    else:
+        output_df.write.mode('overwrite').partitionBy(part_col).format('delta').saveAsTable(f"{db_name}.{table_name}")
+
+
 
 # COMMAND ----------
 
