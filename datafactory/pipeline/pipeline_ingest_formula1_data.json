@@ -1,0 +1,50 @@
+{
+	"name": "pipeline_ingest_formula1_data",
+	"properties": {
+		"activities": [
+			{
+				"name": "Ingest Circuits file",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/f1-project/ingestion/1.ingest_circuits_file",
+					"baseParameters": {
+						"param_data_source": {
+							"value": "@variables('v_data_source')",
+							"type": "Expression"
+						},
+						"param_file_date": {
+							"value": "@formatDateTime(pipeline().parameters.param_window_end_date, 'yyyy-MM-dd')",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "linkedservice_databricks_f1",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"concurrency": 1,
+		"parameters": {
+			"param_window_end_date": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"v_data_source": {
+				"type": "String",
+				"defaultValue": "Ergast"
+			}
+		},
+		"annotations": []
+	}
+}
