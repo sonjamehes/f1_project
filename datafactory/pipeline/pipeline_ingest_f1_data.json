@@ -15,6 +15,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"notebookPath": "/f1-project/ingestion/1.ingest_circuits_file",
 					"baseParameters": {
 						"param_data_source": {
 							"value": "@variables('param_data_source')",
