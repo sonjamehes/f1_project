@@ -100,7 +100,7 @@ qualifying_renamed = add_ingestion_date(qualifying_renamed)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ###Step 3. Write to output to processed-silver container in parquet format
+# MAGIC ###Step 3. Write to output to processed-silver container in delta format
 
 # COMMAND ----------
 
@@ -108,7 +108,12 @@ qualifying_renamed = add_ingestion_date(qualifying_renamed)
 
 # COMMAND ----------
 
-overwrite_partition (qualifying_renamed, 'f1_processed', 'qualifying', 'race_id')
+# overwrite_partition (qualifying_renamed, 'f1_processed', 'qualifying', 'race_id')
+
+# COMMAND ----------
+
+merge_condition = 'tgt.qualify_id = src.qualify_id AND tgt.race_id = src.race_id '
+merge_delta_data(qualifying_renamed, 'f1_processed', 'qualifying', processed_folder_path, merge_condition, 'race_id')
 
 # COMMAND ----------
 
