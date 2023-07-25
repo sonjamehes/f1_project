@@ -171,7 +171,7 @@ display(races_selected_df)
 
 # COMMAND ----------
 
-races_selected_df.write.mode('overwrite').partitionBy('race_year').format('parquet').saveAsTable('f1_processed.races')
+races_selected_df.write.mode('overwrite').partitionBy('race_year').format('delta').saveAsTable('f1_processed.races')
 
 # COMMAND ----------
 
@@ -184,12 +184,12 @@ races_selected_df.write.mode('overwrite').partitionBy('race_year').format('parqu
 
 # COMMAND ----------
 
-# display(spark.read.parquet(f'{processed_folder_path}/races'))
+# display(spark.read.delta(f'{processed_folder_path}/races'))
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC select distinct(file_date) from f1_processed.races order by file_date
+# %sql
+# select distinct(file_date) from f1_processed.races order by file_date
 
 # COMMAND ----------
 
