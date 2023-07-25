@@ -97,7 +97,12 @@ pit_stop_renamed = add_ingestion_date(pit_stop_renamed)
 
 # COMMAND ----------
 
-overwrite_partition (pit_stop_renamed, 'f1_processed', 'pit_stops', 'race_id')
+# overwrite_partition (pit_stop_renamed, 'f1_processed', 'pit_stops', 'race_id')
+
+# COMMAND ----------
+
+merge_condition = 'tgt.race_id = src.race_id  AND tgt.driver_id = src.driver_id  AND tgt.stop = src.stop'
+merge_delta_data(pit_stop_renamed, 'f1_processed', 'pit_stops', processed_folder_path, merge_condition, 'race_id')
 
 # COMMAND ----------
 
