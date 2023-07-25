@@ -1,0 +1,46 @@
+{
+	"name": "dataset_formula1_raw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "linkedservice_ADLS_storage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"param_window_end_date": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@formatDateTime(dataset().param_window_end_date, 'yyyy-MM-dd')",
+					"type": "Expression"
+				},
+				"fileSystem": "raw-bronze"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"constructorId": {
+					"type": "integer"
+				},
+				"constructorRef": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"nationality": {
+					"type": "string"
+				},
+				"url": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}
