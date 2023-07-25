@@ -5,8 +5,14 @@
 		"factoryName": {
 			"value": "f1-project-databricks-adf"
 		},
+		"linkedservice_ADLS_storage_accountKey": {
+			"value": ""
+		},
 		"linedservice_AzureDatabricks_properties_typeProperties_existingClusterId": {
 			"value": "0712-163340-pxuyk6rb"
+		},
+		"linkedservice_ADLS_storage_properties_typeProperties_url": {
+			"value": "https://f1datalakelearn.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"value": ""
