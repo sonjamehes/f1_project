@@ -4,7 +4,7 @@
 		"activities": [
 			{
 				"name": "Get Folder Details",
-				"description": "we will use this to check whether we have a folder with the date in the raw-bronze container in ADLS",
+				"description": "",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
@@ -31,6 +31,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {

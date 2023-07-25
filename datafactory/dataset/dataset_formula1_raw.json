@@ -16,7 +16,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"folderPath": {
-					"value": "@formatDateTime(dataset().param_window_end_date, 'yyyy-MM-dd')",
+					"value": "@formatDateTime(dataset().param_window_end_date, 'yyy-MM-dd')",
 					"type": "Expression"
 				},
 				"fileSystem": "raw-bronze"
