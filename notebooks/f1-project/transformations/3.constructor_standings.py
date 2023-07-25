@@ -12,7 +12,7 @@ v_file_date = dbutils.widgets.get('param_file_date')
 
 # COMMAND ----------
 
-race_results_df = spark.read.parquet(f'{presentation_folder_path}/race_results')
+race_results_df = spark.read.format('delta').load(f'{presentation_folder_path}/race_results')
 
 # COMMAND ----------
 
@@ -24,7 +24,7 @@ from pyspark.sql.functions import sum, when, col, count
 
 # COMMAND ----------
 
-race_results_df_list = spark.read.parquet(f'{presentation_folder_path}/race_results')\
+race_results_df_list = spark.read.format('delta').load(f'{presentation_folder_path}/race_results')\
     .filter(f"file_date='{v_file_date}'" )
 
 
@@ -34,7 +34,7 @@ race_year_list = dataframe_columns_to_list(race_results_df_list, 'race_year')
 
 # COMMAND ----------
 
-race_results_df = spark.read.parquet(f'{presentation_folder_path}/race_results')\
+race_results_df = spark.read.format('delta').load(f'{presentation_folder_path}/race_results')\
     .filter(col("race_year").isin(race_year_list))
 
 # COMMAND ----------
@@ -57,7 +57,12 @@ final_df = constructor_standings_df.withColumn('rank', rank().over(constructors_
 # COMMAND ----------
 
 
-overwrite_partition(final_df, 'f1_presentation', 'constructor_standings', 'race_year')
+# overwrite_partition(final_df, 'f1_presentation', 'constructor_standings', 'race_year')
+
+# COMMAND ----------
+
+merge_condition = 'tgt.team = src.team AND tgt.race_year = src.race_year'
+merge_delta_data(final_df, 'f1_presentation', 'constructor_standings', presentation_folder_path, merge_condition, 'race_year')
 
 # COMMAND ----------
 
