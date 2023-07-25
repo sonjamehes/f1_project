@@ -21,10 +21,10 @@ v_file_date = dbutils.widgets.get('param_file_date')
 
 # COMMAND ----------
 
-drivers = spark.read.parquet(f'{processed_folder_path}/drivers').withColumnRenamed("name", "driver_name").withColumnRenamed("number", "driver_number").withColumnRenamed("nationality", "driver_nationality")
-races = spark.read.parquet(f'{processed_folder_path}/races').withColumnRenamed("race_timestamp", "race_date").withColumnRenamed("name", "race_name")#.filter('race_year = 2020')
-circuits = spark.read.parquet(f'{processed_folder_path}/circuits').withColumnRenamed("location", "circuit_location")#.filter('circuit_location = "Abu Dhabi"')
-constructors = spark.read.parquet(f'{processed_folder_path}/constructors').withColumnRenamed("name", "team")
+drivers = spark.read.format('delta').load(f'{processed_folder_path}/drivers').withColumnRenamed("name", "driver_name").withColumnRenamed("number", "driver_number").withColumnRenamed("nationality", "driver_nationality")
+races = spark.read.format('delta').load(f'{processed_folder_path}/races').withColumnRenamed("race_timestamp", "race_date").withColumnRenamed("name", "race_name")#.filter('race_year = 2020')
+circuits = spark.read.format('delta').load(f'{processed_folder_path}/circuits').withColumnRenamed("location", "circuit_location")#.filter('circuit_location = "Abu Dhabi"')
+constructors = spark.read.format('delta').load(f'{processed_folder_path}/constructors').withColumnRenamed("name", "team")
 
 
 # COMMAND ----------
@@ -58,7 +58,12 @@ results_driver_final = add_ingestion_date(results_driver)
 
 # COMMAND ----------
 
-overwrite_partition(results_driver_final, 'f1_presentation', 'race_results', 'race_id')
+# overwrite_partition(results_driver_final, 'f1_presentation', 'race_results', 'race_id')
+
+# COMMAND ----------
+
+merge_condition = 'tgt.driver_name = src.driver_name AND tgt.race_id = src.race_id'
+merge_delta_data(results_driver_final, 'f1_presentation', 'race_results', presentation_folder_path, merge_condition, 'race_id')
 
 # COMMAND ----------
 
