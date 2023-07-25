@@ -21,7 +21,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"param_window_end_date": {
-								"value": "@pipeline().parameters.param_window_end_date",
+								"value": "@pipeline().parameters.param_windw_end_date",
 								"type": "Expression"
 							}
 						}
@@ -302,7 +302,7 @@
 			}
 		],
 		"parameters": {
-			"param_window_end_date": {
+			"param_windw_end_date": {
 				"type": "string"
 			}
 		},
