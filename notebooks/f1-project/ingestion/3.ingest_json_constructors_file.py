@@ -104,11 +104,11 @@ constructor_final_df = constructor_df_drop.withColumnRenamed('constructorId', 'c
 
 # COMMAND ----------
 
-constructor_final_df2.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.constructors')
+constructor_final_df2.write.mode('overwrite').format('delta').saveAsTable('f1_processed.constructors')
 
 # COMMAND ----------
 
-# display(spark.read.parquet('/mnt/f1datalakelearn/processed-silver/constructors'))
+# display(spark.read.delta('/mnt/f1datalakelearn/processed-silver/constructors'))
 
 # COMMAND ----------
 
