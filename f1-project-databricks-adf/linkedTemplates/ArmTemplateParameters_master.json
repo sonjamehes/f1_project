@@ -14,6 +14,9 @@
 		"linkedservice_ADLS_storage_properties_typeProperties_url": {
 			"value": "https://f1datalakelearn.dfs.core.windows.net/"
 		},
+		"trigger_process_f1_project_properties_pipeline_parameters_param_windw_end_date": {
+			"value": "@trigger().outputs.windowEndTime"
+		},
 		"containerUri": {
 			"value": ""
 		},
