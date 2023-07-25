@@ -48,11 +48,11 @@ def merge_delta_data(input_df, db_name, table_name, folder_path, merge_condition
             input_df.alias("src"),
             merge_condition) \
             .whenMatchedUpdateAll() \
-            .whenNotMatchedInsertAll() z
+            .whenNotMatchedInsertAll() \
             .execute()
         
     else:
-        output_df.write.mode('overwrite').partitionBy(part_col).format('delta').saveAsTable(f"{db_name}.{table_name}")
+        input_df.write.mode('overwrite').partitionBy(part_col).format('delta').saveAsTable(f"{db_name}.{table_name}")
 
 
 
