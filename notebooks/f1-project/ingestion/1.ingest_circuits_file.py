@@ -194,7 +194,11 @@ circuits_final_df = add_ingestion_date(circuits_renamed_df)
 # COMMAND ----------
 
 ##this will only save the df into ADLS in parquet format and also save the table under the f1_processsed database that we've created (as a managed table)
-circuits_final_df.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.circuits')
+# circuits_final_df.write.mode('overwrite').format('parquet').saveAsTable('f1_processed.circuits')
+
+# COMMAND ----------
+
+circuits_final_df.write.mode('overwrite').format('delta').saveAsTable('f1_processed.circuits')
 
 # COMMAND ----------
 
@@ -203,8 +207,14 @@ circuits_final_df.write.mode('overwrite').format('parquet').saveAsTable('f1_proc
 
 # COMMAND ----------
 
-display(spark.read.parquet(f'{processed_folder_path}/circuits'))
+# display(spark.read.delta(f'{processed_folder_path}/circuits'))
 
 # COMMAND ----------
 
 dbutils.notebook.exit('Success')
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC drop table f1_processed.qualifying
+# MAGIC
