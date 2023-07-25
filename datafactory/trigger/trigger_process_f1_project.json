@@ -2,7 +2,16 @@
 	"name": "trigger_process_f1_project",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
+		"pipeline": {
+			"pipelineReference": {
+				"referenceName": "pipeline_full_f1_data",
+				"type": "PipelineReference"
+			},
+			"parameters": {
+				"param_windw_end_date": "@trigger().outputs.windowEndTime"
+			}
+		},
 		"type": "TumblingWindowTrigger",
 		"typeProperties": {
 			"frequency": "Hour",
