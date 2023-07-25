@@ -68,3 +68,11 @@ merge_delta_data(results_driver_final, 'f1_presentation', 'race_results', presen
 # COMMAND ----------
 
 dbutils.notebook.exit('Success')
+
+# COMMAND ----------
+
+# %sql
+# select race_id, count(1)
+# from f1_presentation.race_results
+# group by race_id
+# order by race_id desc
