@@ -1,0 +1,59 @@
+{
+	"name": "pipeline_full_f1_data",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Ingestion Pipeline",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pipeline_ingest_f1_data",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"param_windw_end_date": {
+							"value": "@pipeline().parameters.param_windw_end_date",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Execute Transform Pipeline",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Ingestion Pipeline",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pipeline_transform_f1_data_copy1",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"param_windw_end_date": {
+							"value": "@pipeline().parameters.param_windw_end_date",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"concurrency": 1,
+		"parameters": {
+			"param_windw_end_date": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
