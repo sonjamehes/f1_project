@@ -1,0 +1,13 @@
+{
+	"name": "linedservice_AzureDatabricks",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "https://adb-8027021862575142.2.azuredatabricks.net",
+			"authentication": "MSI",
+			"workspaceResourceId": "/subscriptions/167ee12a-a4da-41bd-b7d3-c51cef19c0cd/resourceGroups/f1_project/providers/Microsoft.Databricks/workspaces/f1-databricks-ws",
+			"existingClusterId": "0712-163340-pxuyk6rb"
+		}
+	}
+}
