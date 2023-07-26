@@ -2,7 +2,7 @@
 	"name": "trigger_process_f1_project",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipeline": {
 			"pipelineReference": {
 				"referenceName": "pipeline_full_f1_data",
