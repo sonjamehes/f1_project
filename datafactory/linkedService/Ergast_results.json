@@ -1,0 +1,12 @@
+{
+	"name": "Ergast_results",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://ergast.com/api/f1/2023/1/results",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
