@@ -7,13 +7,13 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "f1-project-databricks-adf"
 		},
-		"linkedservice_ADLS_storage_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'linkedservice_ADLS_storage'"
-		},
 		"AzureBlobStorage1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"linkedservice_ADLS_storage_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'linkedservice_ADLS_storage'"
 		},
 		"Ergast_results_properties_typeProperties_url": {
 			"type": "string",
@@ -23,9 +23,17 @@
 			"type": "string",
 			"defaultValue": "https://dummy.restapiexample.com/api/v1/employees"
 		},
+		"HttpServer2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "http://ergast.com/api/f1/2023/drivers"
+		},
 		"HttpServer_employee_try_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://dummy.restapiexample.com/api/v1/employees"
+		},
+		"drivers_ls_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "http://ergast.com/api/f1/2023/drivers"
 		},
 		"linedservice_AzureDatabricks_properties_typeProperties_existingClusterId": {
 			"type": "string",
@@ -66,11 +74,11 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"linkedservice_ADLS_storage_accountKey": {
-						"value": "[parameters('linkedservice_ADLS_storage_accountKey')]"
-					},
 					"AzureBlobStorage1_connectionString": {
 						"value": "[parameters('AzureBlobStorage1_connectionString')]"
+					},
+					"linkedservice_ADLS_storage_accountKey": {
+						"value": "[parameters('linkedservice_ADLS_storage_accountKey')]"
 					},
 					"Ergast_results_properties_typeProperties_url": {
 						"value": "[parameters('Ergast_results_properties_typeProperties_url')]"
@@ -78,8 +86,14 @@
 					"HttpServer1_properties_typeProperties_url": {
 						"value": "[parameters('HttpServer1_properties_typeProperties_url')]"
 					},
+					"HttpServer2_properties_typeProperties_url": {
+						"value": "[parameters('HttpServer2_properties_typeProperties_url')]"
+					},
 					"HttpServer_employee_try_properties_typeProperties_url": {
 						"value": "[parameters('HttpServer_employee_try_properties_typeProperties_url')]"
+					},
+					"drivers_ls_properties_typeProperties_url": {
+						"value": "[parameters('drivers_ls_properties_typeProperties_url')]"
 					},
 					"linedservice_AzureDatabricks_properties_typeProperties_existingClusterId": {
 						"value": "[parameters('linedservice_AzureDatabricks_properties_typeProperties_existingClusterId')]"
