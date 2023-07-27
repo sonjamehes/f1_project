@@ -1,0 +1,20 @@
+{
+	"name": "Json4",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "linkedservice_ADLS_storage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "driversjson",
+				"folderPath": "drivers",
+				"fileSystem": "f1-api-read"
+			}
+		},
+		"schema": {}
+	}
+}
