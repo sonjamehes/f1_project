@@ -8,6 +8,18 @@
 		"linkedservice_ADLS_storage_accountKey": {
 			"value": ""
 		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"Ergast_results_properties_typeProperties_url": {
+			"value": "https://ergast.com/api/f1/2023/1/results"
+		},
+		"HttpServer1_properties_typeProperties_url": {
+			"value": "https://dummy.restapiexample.com/api/v1/employees"
+		},
+		"HttpServer_employee_try_properties_typeProperties_url": {
+			"value": "https://dummy.restapiexample.com/api/v1/employees"
+		},
 		"linedservice_AzureDatabricks_properties_typeProperties_existingClusterId": {
 			"value": "0712-163340-pxuyk6rb"
 		},
