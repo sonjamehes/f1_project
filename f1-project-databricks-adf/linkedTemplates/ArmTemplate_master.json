@@ -27,6 +27,10 @@
 			"type": "string",
 			"defaultValue": "http://ergast.com/api/f1/2023/drivers"
 		},
+		"HttpServer3_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://ergast.com/api/f1/2023/drivers.json"
+		},
 		"HttpServer_employee_try_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://dummy.restapiexample.com/api/v1/employees"
@@ -88,6 +92,9 @@
 					},
 					"HttpServer2_properties_typeProperties_url": {
 						"value": "[parameters('HttpServer2_properties_typeProperties_url')]"
+					},
+					"HttpServer3_properties_typeProperties_url": {
+						"value": "[parameters('HttpServer3_properties_typeProperties_url')]"
 					},
 					"HttpServer_employee_try_properties_typeProperties_url": {
 						"value": "[parameters('HttpServer_employee_try_properties_typeProperties_url')]"

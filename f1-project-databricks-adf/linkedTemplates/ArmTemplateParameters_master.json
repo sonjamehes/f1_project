@@ -20,6 +20,9 @@
 		"HttpServer2_properties_typeProperties_url": {
 			"value": "http://ergast.com/api/f1/2023/drivers"
 		},
+		"HttpServer3_properties_typeProperties_url": {
+			"value": "https://ergast.com/api/f1/2023/drivers.json"
+		},
 		"HttpServer_employee_try_properties_typeProperties_url": {
 			"value": "https://dummy.restapiexample.com/api/v1/employees"
 		},
