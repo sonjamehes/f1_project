@@ -5,6 +5,6 @@ creating a data databricks project called f1-project that:
 - this solution will handle both full-load and incremental workflow
 - will use ADF to create a pipeline that will run automatically and run the ingestion and transformation notebooks through a trigger
 
-creating a mini project, including only to files that:
+creating a mini project, including only two files that:
 - will basically do the same thing as the one above, but using unity catalogs
   
